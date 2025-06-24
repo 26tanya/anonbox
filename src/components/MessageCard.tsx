@@ -1,14 +1,13 @@
 'use client'
+
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-
+} from '@/components/ui/card'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,56 +18,70 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Button } from "./ui/button"
-import { X } from "lucide-react"
-import { Message } from "@/model/User"
-import {Toaster} from "@/components/ui/sonner"
-import { toast } from "sonner"
-import { ApiResponse } from "@/types/ApiResponse"
-import axios from "axios"
+} from '@/components/ui/alert-dialog'
+import { Button } from './ui/button'
+import { X } from 'lucide-react'
+import { Message } from '@/model/User'
+import { toast } from 'sonner'
+import axios from 'axios'
+import { ApiResponse } from '@/types/ApiResponse'
 
-type MessageCardProps={
-    message:Message;
-    onMessageDelete:(messageId:string)=>void
+type MessageCardProps = {
+  message: Message
+  onMessageDelete: (messageId: string) => void
 }
 
-function MessageCard({message,onMessageDelete}:MessageCardProps) {
-  const handleDeleteConfirm=async()=>{
-    const response=await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`)
-    toast(response.data.message, {
-        });
+function MessageCard({ message, onMessageDelete }: MessageCardProps) {
+  const handleDeleteConfirm = async () => {
+    const response = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`)
+    toast(response.data.message)
     onMessageDelete(message._id)
   }
+
   return (
-    <Card>
-        <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-                        <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="destructive"><X className="w-5 h-5"/></Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your
-                        account and remove your data from our servers.
-                    </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-                </AlertDialog>
-            <CardDescription>Card Description</CardDescription>
-            <CardAction>Card Action</CardAction>
-        </CardHeader>
-        <CardContent>
-           
-        </CardContent>
-       
+    <Card className="w-full sm:w-[300px] lg:w-[340px] min-h-[220px] rounded-xl shadow-md hover:shadow-lg transition-all border border-muted bg-background flex flex-col justify-between">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle className="text-base text-primary">Anonymous Message</CardTitle>
+            <CardDescription className="text-xs text-muted-foreground mt-1">
+              {new Date(message.createdAt).toLocaleString()}
+            </CardDescription>
+          </div>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Message?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this anonymous message? This cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteConfirm}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </CardHeader>
+
+      <CardContent className="pt-0 text-sm text-muted-foreground whitespace-pre-wrap">
+        {message.content}
+      </CardContent>
+
+      <CardFooter className="mt-auto text-right text-xs text-muted-foreground justify-end">
+        — sent anonymously
+      </CardFooter>
     </Card>
   )
 }
