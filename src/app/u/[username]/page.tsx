@@ -184,7 +184,7 @@ export default function SendMessage() {
                 <Button
                   key={index}
                   variant="outline"
-                  className="w-full py-2 break-words text-center whitespace-normal w-full"
+                  className="py-2 break-words text-center whitespace-normal w-full"
                   onClick={() => handleMessageClick(message)}
                 >
                   {message}
