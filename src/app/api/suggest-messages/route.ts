@@ -1,55 +1,45 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+// app/api/suggest-messages/route.ts
 import { NextResponse } from 'next/server';
+import OpenAI from 'openai';
 
 export const runtime = 'edge';
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+const openai = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY!,
+  baseURL: 'https://api.groq.com/openai/v1', // 🔁 IMPORTANT: Use Groq's base URL
+});
 
-export async function POST(req: Request) {
+export async function POST(req:Request) {
   try {
-    const prompt =
-      "Create a list of three open-ended and engaging questions formatted as a single string. Each question should be separated by '||'. These questions are for an anonymous social messaging platform, like Qooh.me, and should be suitable for a diverse audience.1 Avoid personal or sensitive topics, focusing instead on universal themes that encourage friendly interaction. For example, your output should be structured like this: 'What’s a hobby you’ve recently started?||If you could have dinner with any historical figure, who would it be?||What’s a simple thing that makes you happy?'. Ensure the questions are intriguing, foster curiosity, and contribute to a positive and welcoming conversational environment.";
+     await req.json();
+   const prompt = `You're helping generate engaging, anonymous prompts for an anonymous messaging platform like AnonBox. The messages users send are meant to spark friendly conversations, collect anonymous feedback, or encourage thoughtful replies — but should always feel safe and welcoming.
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    Create a list of three open-ended and professional-to-fun questions, separated by '||'.  Mix topics like general feedback, casual personality questions about the persom whom you are sending to, light advice requests,general feedbacks about work, and imagination-based prompts. 
 
-    const result = await model.generateContentStream({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.8,
-        maxOutputTokens: 400,
-      },
-      safetySettings: [
+    Examples:
+    
+    - you did well in the class presentation!||How about a meetup||I saw your work. i think u could do better? 
+
+    Only return the formatted string of three questions separated by '||'. No intro or explanation. Random ID: ${Math.floor(Math.random() * 10000)}.`
+
+
+    const chatCompletion = await openai.chat.completions.create({
+      model: 'llama3-70b-8192', // or use `llama3-70b-8192` or `gemma-7b-it`
+      messages: [
         {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+          role: 'user',
+          content: prompt,
         },
       ],
+      temperature: 0.9,
+      max_tokens: 150,
     });
 
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        for await (const chunk of result.stream) {
-          const text = chunk.text();
-          if (text) {
-            controller.enqueue(encoder.encode(text));
-          }
-        }
-        controller.close();
-      },
-    });
+    const text = chatCompletion.choices[0].message.content;
 
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-      },
-    });
+    return NextResponse.json({ suggestions: text });
   } catch (error) {
-    console.error('Gemini Error:', error);
-    if (error instanceof Error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-    } else {
-    return NextResponse.json({ error: 'Unknown error' }, { status: 500 });
-    }
+    console.error('Groq Error:', error);
+    return NextResponse.json({ error: 'Failed to generate suggestions' }, { status: 500 });
   }
 }

@@ -11,7 +11,7 @@ export const authOptions:NextAuthOptions={
            id:"credentials",
            name:"Credentials",
            credentials: {
-                email: { label: "Email", type: "text"},
+                identifier: { label: "Email", type: "text"},
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials:any):Promise<any>{
@@ -26,7 +26,7 @@ export const authOptions:NextAuthOptions={
                   if(!user){
                     throw new Error('No user found with this email')
                   }
-                  if(user.isVerified){
+                  if(!user.isVerified){
                     throw new Error('Please verify your account before login')
                   }
                   const isPasswordCorrect=await bcrypt.compare(credentials.password,user.password)
@@ -43,7 +43,7 @@ export const authOptions:NextAuthOptions={
             if(token){
                 session.user._id=token._id
                 session.user.isVerified=token.isVerified;
-                session.user.isAcceptingMessaages=token.isAcceptingMessaages;
+                session.user.isAcceptingMessages=token.isAcceptingMessages;
                 session.user.username=token.username;
             }
             return session
@@ -52,7 +52,7 @@ export const authOptions:NextAuthOptions={
             if(user){
                 token._id=user._id?.toString()
                 token.isVerified=user.isVerified;
-                token.isAcceptingMessages;
+                token.isAcceptingMessages=user.isAcceptingMessages;
                 token.username=user.username;
             }
             return token
