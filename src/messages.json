@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Message from User123",
+    "content": "Hey, how are you doing today?",
+    "received": "10 minutes ago"
+  },
+  {
+    "title": "Message from InspireHub",
+    "content": "Just read your post on AI—super insightful!",
+    "received": "2 hours ago"
+  },
+  {
+    "title": "Message from MysteryGuest",
+    "content": "Got any cool book recommendations for a weekend read?",
+    "received": "1 day ago"
+  },
+  {
+    "title": "Message from DevTalks",
+    "content": "We’d love your thoughts on our latest coding challenge!",
+    "received": "3 hours ago"
+  },
+  {
+    "title": "Message from BookBuddy",
+    "content": "Join us for an online discussion on mystery novels this Friday.",
+    "received": "5 hours ago"
+  }
+]
