@@ -54,7 +54,7 @@ function MessageCard({ message, onMessageDelete }: MessageCardProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-red-500 hover:bg-red-100 dark:hover:bg-red-900"
+                className="text-red-500 hover:bg-red-100"
               >
                 <X className="w-4 h-4" />
               </Button>

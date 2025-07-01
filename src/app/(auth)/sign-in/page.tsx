@@ -86,7 +86,7 @@ function SignIn() {
               </FormItem>
             )}
           />
-          <Button type="submit">
+          <Button type="submit" className="bg-black text-white hover:cursor-pointer">
             Sign in
           </Button>
           </form>
