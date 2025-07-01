@@ -6,7 +6,6 @@ import UserModel from "@/model/User";
 export async function POST(request: Request) {
   await dbConnect();
   const session = await getServerSession(authOptions);
-
   if (!session || !session.user?.email) {
     return Response.json(
       {
@@ -56,7 +55,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   await dbConnect();
   const session = await getServerSession(authOptions);
 

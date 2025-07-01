@@ -5,12 +5,12 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
 import {useDebounceCallback} from 'usehooks-ts';
-import {Toaster} from "@/components/ui/sonner"
+
 import { toast } from "sonner"
 import { signUpSchema } from "@/schemas/signUpSchema"
 import axios,{AxiosError} from 'axios'
 import { ApiResponse } from "@/types/ApiResponse"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react";
@@ -62,7 +62,7 @@ function Page() {
      }catch(error){
        console.error("Error in signup of user",error)
         const axiosError=error as AxiosError<ApiResponse>;
-         let errorMessage=axiosError.response?.data.message
+         const errorMessage=axiosError.response?.data.message
          toast('Signup failed', {
           description: errorMessage,
           className: "bg-red-600 text-white",

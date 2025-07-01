@@ -1,7 +1,7 @@
 'use client'
 import { useParams, useRouter } from 'next/navigation'
 import React from 'react'
-import {Toaster} from "@/components/ui/sonner"
+
 import { toast } from "sonner"
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -33,7 +33,7 @@ function VerifyAccount() {
         }catch(error){
            console.error("Error in verification of user",error)
             const axiosError=error as AxiosError<ApiResponse>;
-            let errorMessage=axiosError.response?.data.message
+            const errorMessage=axiosError.response?.data.message
             toast('Verification failed', {
                 description: errorMessage,
                 className: "bg-red-600 text-white",
